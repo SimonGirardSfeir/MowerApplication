@@ -1,5 +1,7 @@
 package com.publicis.mowerapplication.controllers;
 
+import com.publicis.mowerapplication.exceptions.IncorrectContentException;
+import com.publicis.mowerapplication.exceptions.IncorrectFileNameException;
 import com.publicis.mowerapplication.services.MainService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
@@ -21,7 +23,7 @@ public class MainController {
     }
 
     @PostMapping
-    public @ResponseBody byte[] postFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public @ResponseBody byte[] postFile(@RequestParam("file") MultipartFile file) throws IOException, IncorrectFileNameException, IncorrectContentException {
         InputStream inputStream = mainService.processFile(file);
 
         return IOUtils.toByteArray(inputStream);

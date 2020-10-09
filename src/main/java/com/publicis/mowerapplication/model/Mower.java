@@ -1,5 +1,6 @@
 package com.publicis.mowerapplication.model;
 
+import com.publicis.mowerapplication.exceptions.IncorrectContentException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,13 +14,15 @@ public class Mower {
     private int y;
     private Direction direction;
 
-    public void move(char instruction, int xMax, int yMax) {
+    public void move(char instruction, int xMax, int yMax) throws IncorrectContentException {
         if(instruction == 'G') {
             goLeft();
         } else if(instruction == 'D') {
             goRight();
         } else if(instruction == 'A') {
             goForward(xMax, yMax);
+        } else {
+            throw new IncorrectContentException("The data concerning the movement of the mower is incorrect.");
         }
     }
 

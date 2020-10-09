@@ -1,5 +1,6 @@
 package com.publicis.mowerapplication.model;
 
+import com.publicis.mowerapplication.exceptions.IncorrectContentException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +13,7 @@ class MowerTest {
     }
 
     @Test
-    void moveLeft() {
+    void moveLeft() throws IncorrectContentException {
 
         Mower mower1 = new Mower(0, 0, Direction.SOUTH);
         mower1.move('G', 1, 1);
@@ -36,7 +37,7 @@ class MowerTest {
     }
 
     @Test
-    void moveRight() {
+    void moveRight() throws IncorrectContentException {
 
         Mower mower1 = new Mower(0, 0, Direction.SOUTH);
         mower1.move('D', 1, 1);
@@ -60,7 +61,7 @@ class MowerTest {
     }
 
     @Test
-    void moveForward() {
+    void moveForward() throws IncorrectContentException {
         //Standard case for direction South
         Mower mower1 = new Mower(1 , 1, Direction.SOUTH);
         mower1.move('A', 2, 2);
@@ -124,5 +125,11 @@ class MowerTest {
         assertEquals(0, mower8.getX());
         assertEquals(1, mower8.getY());
         assertEquals(Direction.WEST, mower8.getDirection());
+    }
+
+    @Test
+    void moveWrongDirection() {
+        Mower mower = new Mower(1 , 1, Direction.SOUTH);
+        assertThrows(IncorrectContentException.class, () -> mower.move('Z', 2, 2));
     }
 }
