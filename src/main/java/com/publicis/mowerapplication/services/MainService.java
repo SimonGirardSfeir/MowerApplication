@@ -52,7 +52,7 @@ public class MainService {
             int y = Integer.parseInt(arrayStartingPosition[1]);
 
             if(x > xMax|| y > yMax) {
-                throw new IncorrectContentException("The position of the starting point is not on the lane.");
+                throw new IncorrectContentException("The position of the starting point is not on the lawn.");
             }
             Direction direction = getDirectionFromString(arrayStartingPosition[2]);
             Mower mower = new Mower(x, y, direction);
