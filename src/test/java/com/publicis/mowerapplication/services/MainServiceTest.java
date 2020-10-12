@@ -10,6 +10,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,8 +44,9 @@ class MainServiceTest {
 
     @Test
     void processFile() throws IOException, IncorrectFileNameException, IncorrectContentException {
-        InputStream inputStream = mainService.processFile(file);
+        byte [] byteArray = mainService.processFile(file);
 
+        InputStream inputStream = new ByteArrayInputStream(byteArray);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         assertEquals("1 3 N", reader.readLine());

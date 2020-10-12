@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class MainService {
 
-    public InputStream processFile(MultipartFile file) throws IOException, IncorrectFileNameException, IncorrectContentException {
+    public byte [] processFile(MultipartFile file) throws IOException, IncorrectFileNameException, IncorrectContentException {
 
         if(!Objects.requireNonNull(file.getOriginalFilename()).endsWith(".txt")){
             throw new IncorrectFileNameException("File with wrong format.");
@@ -69,8 +68,7 @@ public class MainService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.write(stringBuilder.toString().getBytes());
 
-        byte[] bytes = byteArrayOutputStream.toByteArray();
-        return new ByteArrayInputStream(bytes);
+        return  byteArrayOutputStream.toByteArray();
     }
 
     public List<String> getLines(MultipartFile file) throws IOException {
