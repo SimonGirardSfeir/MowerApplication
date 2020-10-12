@@ -122,6 +122,19 @@ class MainServiceTest {
 
         assertThrows(IncorrectContentException.class, () -> mainService.processFile(fileWithWrongNumberOfLines));
     }
+    @Test
+    void processFileWithStartingPointOutOfLawn() throws IOException {
+        Path path = Paths.get("./src/test/resources/fileWithStartingPointOufOfLawn.txt");
+        String name = "fileWithStartingPointOufOfLawn.txt";
+        String originalFileName = "fileWithStartingPointOufOfLawn.txt";
+        String contentType = "text/plain";
+        byte[] content = Files.readAllBytes(path);
+
+        MultipartFile fileWithStartingPointOufOfLawn = new MockMultipartFile(name,
+                originalFileName, contentType, content);
+
+        assertThrows(IncorrectContentException.class, () -> mainService.processFile(fileWithStartingPointOufOfLawn));
+    }
 
     @Test
     void getLines() throws IOException {

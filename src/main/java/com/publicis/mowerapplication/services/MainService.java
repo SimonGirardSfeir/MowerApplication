@@ -50,6 +50,10 @@ public class MainService {
             }
             int x = Integer.parseInt(arrayStartingPosition[0]);
             int y = Integer.parseInt(arrayStartingPosition[1]);
+
+            if(x > xMax|| y > yMax) {
+                throw new IncorrectContentException("The position of the starting point is not on the lane.");
+            }
             Direction direction = getDirectionFromString(arrayStartingPosition[2]);
             Mower mower = new Mower(x, y, direction);
 
