@@ -1,7 +1,101 @@
 package com.publicis.mowerapplication.model;
 
+import com.publicis.mowerapplication.exceptions.IncorrectContentException;
+
 public enum Direction {
-    EAST("E"), WEST("W"), NORTH("N"), SOUTH("S");
+    EAST("E") {
+        @Override
+        public Direction goLeft() {
+            return Direction.NORTH;
+        }
+
+        @Override
+        public Direction goRight() {
+            return Direction.SOUTH;
+        }
+
+        @Override
+        public int[] goForward(int x, int xMax, int y, int yMax) {
+            int[] array = new int[2];
+            if(x < xMax) {
+                array[0] = ++x;
+            } else {
+                array[0] = x;
+            }
+            array[1] = y;
+
+            return array;
+        }
+    }, WEST("W") {
+        @Override
+        public Direction goLeft() {
+            return Direction.SOUTH;
+        }
+
+        @Override
+        public Direction goRight() {
+            return Direction.NORTH;
+        }
+
+        @Override
+        public int[] goForward(int x, int xMax, int y, int yMax) {
+            int[] array = new int[2];
+            if(x > 0) {
+                array[0] = --x;
+            } else {
+                array[0] = x;
+            }
+            array[1] = y;
+
+            return array;
+        }
+    }, NORTH("N") {
+        @Override
+        public Direction goLeft() {
+            return Direction.WEST;
+        }
+
+        @Override
+        public Direction goRight() {
+            return Direction.EAST;
+        }
+
+        @Override
+        public int[] goForward(int x, int xMax, int y, int yMax) {
+            int[] array = new int[2];
+            if(y < yMax) {
+                array[1] = ++y;
+            } else {
+                array[1] = y;
+            }
+            array[0] = x;
+
+            return array;
+        }
+    }, SOUTH("S") {
+        @Override
+        public Direction goLeft() {
+            return Direction.EAST;
+        }
+
+        @Override
+        public Direction goRight() {
+            return Direction.WEST;
+        }
+
+        @Override
+        public int[] goForward(int x, int xMax, int y, int yMax) {
+            int[] array = new int[2];
+            if(y > 0) {
+                array[1] = --y;
+            } else {
+                array[1] = y;
+            }
+            array[0] = x;
+
+            return array;
+        }
+    };
 
     private final String directionCode;
 
@@ -13,5 +107,23 @@ public enum Direction {
         return directionCode;
     }
 
+    public abstract Direction goLeft();
 
+    public abstract Direction goRight();
+
+    public abstract int[] goForward(int x, int xMax, int y, int yMax);
+
+    public static  Direction getDirectionFromString(String s) throws IncorrectContentException {
+        if(s.charAt(0) == 'N') {
+            return Direction.NORTH;
+        } else if (s.charAt(0) == 'S') {
+            return Direction.SOUTH;
+        } else if (s.charAt(0) == 'E') {
+            return Direction.EAST;
+        } else if (s.charAt(0) == 'W') {
+            return Direction.WEST;
+        } else {
+            throw new IncorrectContentException("The data concerning the cardinal point is incorrect.");
+        }
+    }
 }

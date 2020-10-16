@@ -84,17 +84,7 @@ public class MainService {
     }
 
     public Direction getDirectionFromString(String s) throws IncorrectContentException {
-        if(s.charAt(0) == 'N') {
-            return Direction.NORTH;
-        } else if (s.charAt(0) == 'S') {
-            return Direction.SOUTH;
-        } else if (s.charAt(0) == 'E') {
-            return Direction.EAST;
-        } else if (s.charAt(0) == 'W') {
-            return Direction.WEST;
-        } else {
-            throw new IncorrectContentException("The data concerning the cardinal point is incorrect.");
-        }
+        return Direction.getDirectionFromString(s);
     }
 
     public void moveMower(Mower mower, String line, int xMax, int yMax) throws IncorrectContentException {

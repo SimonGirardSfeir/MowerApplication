@@ -3,11 +3,9 @@ package com.publicis.mowerapplication.model;
 import com.publicis.mowerapplication.exceptions.IncorrectContentException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
-@Setter
 public class Mower {
 
     private int x;
@@ -27,47 +25,18 @@ public class Mower {
     }
 
     private void goLeft() {
-        if(direction.equals(Direction.WEST)) {
-            direction = Direction.SOUTH;
-        } else if(direction.equals(Direction.SOUTH)) {
-            direction = Direction.EAST;
-        } else if(direction.equals(Direction.EAST)) {
-            direction = Direction.NORTH;
-        } else if(direction.equals(Direction.NORTH)) {
-            direction = Direction.WEST;
-        }
+        direction = direction.goLeft();
     }
 
     private void goRight() {
-        if(direction.equals(Direction.WEST)) {
-            direction = Direction.NORTH;
-        } else if(direction.equals(Direction.NORTH)) {
-            direction = Direction.EAST;
-        } else if(direction.equals(Direction.EAST)) {
-            direction = Direction.SOUTH;
-        } else if(direction.equals(Direction.SOUTH)) {
-            direction = Direction.WEST;
-        }
+        direction = direction.goRight();
     }
 
     private void goForward(int xMax, int yMax) {
-        if(direction.equals(Direction.WEST)) {
-            if(x > 0) {
-                x--;
-            }
-        } else if (direction.equals(Direction.NORTH)) {
-            if(y < yMax) {
-                y++;
-            }
-        } else if(direction.equals(Direction.EAST)) {
-            if(x < xMax) {
-                x++;
-            }
-        } else if(direction.equals(Direction.SOUTH)) {
-            if(y > 0) {
-                y--;
-            }
-        }
+        int [] array = direction.goForward(x, xMax, y, yMax);
+
+        x = array[0];
+        y = array[1];
     }
 
     @Override
