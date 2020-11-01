@@ -3,7 +3,9 @@ package com.publicis.mowerapplication.services;
 import com.publicis.mowerapplication.exceptions.IncorrectContentException;
 import com.publicis.mowerapplication.exceptions.IncorrectFileNameException;
 import com.publicis.mowerapplication.model.Direction;
+import com.publicis.mowerapplication.model.Lawn;
 import com.publicis.mowerapplication.model.Mower;
+import com.publicis.mowerapplication.model.RectangleLawn;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,39 +30,12 @@ public class MainService {
         }
 
         List<String> linesFromFile = getLines(file);
-        if(linesFromFile.size() %2 == 0) {
-            throw new IncorrectContentException("Wrong number of lines.");
-        }
-        List<Mower> mowers = new ArrayList<>();
 
-        String[] arrayDimensionLawn = linesFromFile.get(0).split(" ");
+        Lawn lawn = lawnFactory(linesFromFile.get(0));
 
-        if(arrayDimensionLawn.length != 2) {
-            throw new IncorrectContentException("The line concerning the coordinates of the upper right corner of the lawn is incorrect.");
-        }
+        linesFromFile.remove(0);
 
-        int xMax = Integer.parseInt(arrayDimensionLawn[0]);
-        int yMax = Integer.parseInt(arrayDimensionLawn[1]);
-
-        for(int i = 1; i < linesFromFile.size(); i+=2) {
-            String[] arrayStartingPosition = linesFromFile.get(i).split(" ");
-
-            if(arrayStartingPosition.length != 3)   {
-                throw new IncorrectContentException("The line concerning the coordinates of one of the starting points is incorrect.");
-            }
-            int x = Integer.parseInt(arrayStartingPosition[0]);
-            int y = Integer.parseInt(arrayStartingPosition[1]);
-
-            if(x > xMax|| y > yMax) {
-                throw new IncorrectContentException("The position of the starting point is not on the lawn.");
-            }
-            Direction direction = getDirectionFromString(arrayStartingPosition[2]);
-            Mower mower = new Mower(x, y, direction);
-
-            moveMower(mower, linesFromFile.get(i+1), xMax, yMax);
-
-            mowers.add(mower);
-        }
+        List<Mower> mowers = generateMowers(lawn, linesFromFile);
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -75,25 +50,60 @@ public class MainService {
         return  byteArrayOutputStream.toByteArray();
     }
 
-    public List<String> getLines(MultipartFile file) throws IOException {
+    public List<String> getLines(MultipartFile file) throws IOException, IncorrectContentException {
         InputStream inputStreamInitial = file.getInputStream();
-
-        return new BufferedReader(new InputStreamReader(inputStreamInitial, StandardCharsets.UTF_8))
+        List<String> lines = new BufferedReader(new InputStreamReader(inputStreamInitial, StandardCharsets.UTF_8))
                 .lines()
                 .collect(Collectors.toList());
+
+        if(lines.size() %2 == 0) {
+            throw new IncorrectContentException("Wrong number of lines.");
+        }
+
+        return lines;
+    }
+
+    public Lawn lawnFactory(String line) throws IncorrectContentException {
+        String[] arrayDimensionLawn = line.split(" ");
+
+        if(arrayDimensionLawn.length == 2) {
+            return new RectangleLawn(arrayDimensionLawn);
+        } else {
+            throw new IncorrectContentException("The line concerning the coordinates of the upper right corner of the lawn is incorrect.");
+        }
+    }
+
+    public List<Mower> generateMowers(Lawn lawn, List<String> instructions) throws IncorrectContentException {
+        List<Mower> mowers = new ArrayList<>();
+
+        for(int i = 0; i < instructions.size(); i+=2) {
+            String[] arrayStartingPosition = instructions.get(i).split(" ");
+
+            if(arrayStartingPosition.length != 3)   {
+                throw new IncorrectContentException("The line concerning the coordinates of one of the starting points is incorrect.");
+            }
+            lawn.setInitialPosition(instructions.get(i));
+
+            Direction direction = getDirectionFromString(arrayStartingPosition[2]);
+            Mower mower = new Mower(lawn, direction);
+
+            moveMower(mower, instructions.get(i+1), lawn);
+
+            mowers.add(mower);
+        }
+
+        return mowers;
     }
 
     public Direction getDirectionFromString(String s) throws IncorrectContentException {
         return Direction.getDirectionFromString(s);
     }
 
-    public void moveMower(Mower mower, String line, int xMax, int yMax) throws IncorrectContentException {
-
+    public void moveMower(Mower mower, String line, Lawn lawn) throws IncorrectContentException {
         char [] instructions = line.toCharArray();
 
         for(char c : instructions) {
-            mower.move(c, xMax, yMax);
+            mower.move(c, lawn);
         }
-
     }
 }

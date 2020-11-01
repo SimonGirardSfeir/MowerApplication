@@ -15,13 +15,10 @@ public enum Direction {
         }
 
         @Override
-        public int[] goForward(int x, int xMax, int y, int yMax) {
+        public int[] goForward(int x, int y, Lawn lawn) {
             int[] array = new int[2];
-            if(x < xMax) {
-                array[0] = ++x;
-            } else {
-                array[0] = x;
-            }
+
+            array[0] = lawn.goEast(x);
             array[1] = y;
 
             return array;
@@ -38,13 +35,10 @@ public enum Direction {
         }
 
         @Override
-        public int[] goForward(int x, int xMax, int y, int yMax) {
+        public int[] goForward(int x, int y, Lawn lawn) {
             int[] array = new int[2];
-            if(x > 0) {
-                array[0] = --x;
-            } else {
-                array[0] = x;
-            }
+
+            array[0] = lawn.goWest(x);
             array[1] = y;
 
             return array;
@@ -61,14 +55,11 @@ public enum Direction {
         }
 
         @Override
-        public int[] goForward(int x, int xMax, int y, int yMax) {
+        public int[] goForward(int x, int y, Lawn lawn) {
             int[] array = new int[2];
-            if(y < yMax) {
-                array[1] = ++y;
-            } else {
-                array[1] = y;
-            }
+
             array[0] = x;
+            array[1] = lawn.goNorth(y);
 
             return array;
         }
@@ -84,14 +75,11 @@ public enum Direction {
         }
 
         @Override
-        public int[] goForward(int x, int xMax, int y, int yMax) {
+        public int[] goForward(int x, int y, Lawn lawn) {
             int[] array = new int[2];
-            if(y > 0) {
-                array[1] = --y;
-            } else {
-                array[1] = y;
-            }
+
             array[0] = x;
+            array[1] = lawn.goSouth(y);
 
             return array;
         }
@@ -111,7 +99,7 @@ public enum Direction {
 
     public abstract Direction goRight();
 
-    public abstract int[] goForward(int x, int xMax, int y, int yMax);
+    public abstract int[] goForward(int x, int y, Lawn lawn);
 
     public static  Direction getDirectionFromString(String s) throws IncorrectContentException {
         if(s.charAt(0) == 'N') {

@@ -3,7 +3,9 @@ package com.publicis.mowerapplication.services;
 import com.publicis.mowerapplication.exceptions.IncorrectContentException;
 import com.publicis.mowerapplication.exceptions.IncorrectFileNameException;
 import com.publicis.mowerapplication.model.Direction;
+import com.publicis.mowerapplication.model.Lawn;
 import com.publicis.mowerapplication.model.Mower;
+import com.publicis.mowerapplication.model.RectangleLawn;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -137,7 +139,7 @@ class MainServiceTest {
     }
 
     @Test
-    void getLines() throws IOException {
+    void getLines() throws IOException, IncorrectContentException {
         List<String> list = mainService.getLines(file);
 
         assertEquals(5, list.size());
@@ -150,9 +152,20 @@ class MainServiceTest {
     }
 
     @Test
+    void lawnFactory() throws IncorrectContentException {
+        Lawn lawn = mainService.lawnFactory("5 5");
+
+        assertEquals(5, lawn.getDimensions()[0]);
+        assertEquals(5, lawn.getDimensions()[1]);
+
+    }
+
+    @Test
     void moveMower() throws IncorrectContentException {
         Mower mower = new Mower(1, 2, Direction.NORTH);
-        mainService.moveMower(mower, "GAGAGAGAA", 5, 5);
+        String [] dimensions = new String[]{"5", "5"};
+        Lawn lawn = new RectangleLawn(dimensions);
+        mainService.moveMower(mower, "GAGAGAGAA", lawn);
 
         assertEquals(1, mower.getX());
         assertEquals(3, mower.getY());
